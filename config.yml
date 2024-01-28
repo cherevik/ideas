@@ -1,0 +1,29 @@
+log:
+  level: "DEBUG"
+  format: "[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s"
+scheduler:
+  workers: 5
+providers:
+  openai:
+    key: ${OPENAI_API_KEY}
+    endpoint: https://api.openai.com/v1/
+  azure:
+    key: ${AZURE_API_KEY}
+    version: ${AZURE_API_VERSION}
+    endpoint: ${AZURE_ENDPOINT}
+    deployment: ${AZURE_DEPLOYMENT}
+  anthropic:
+    key: ${ANTHROPIC_API_KEY}
+    endpoint: https://api.anthropic.com/v1/
+  gemini:
+    key: ${GEMINI_API_KEY}
+    endpoint: https://generativelanguage.googleapis.com/v1beta/
+  llava:
+    endpoint: http://localhost:8080
+tools:
+  web:
+    endpoint: https://api.ydc-index.io/search
+    key: ${YOU_API_KEY}
+memory:
+  chromadb:
+    path: ./data

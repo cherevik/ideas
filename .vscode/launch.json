@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Module",
+            "type": "python",
+            "request": "launch",
+            "module": "aq",
+            "justMyCode": true,
+            "args": ["apps/task_decomposition.yml", "read_prompt", "files/product_for_students.txt"],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/pyaq"
+            }
+        }
+    ]
+}

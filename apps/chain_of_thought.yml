@@ -1,0 +1,97 @@
+aq: 0.0.1
+
+info:
+  id: aq.apps.ideas.chain_of_thought
+  version: 1.0.0
+  title: Idea Generator
+  profile: >
+    You are a expert in product innovation.
+
+models:
+  gpt4:
+    model: gpt-4-0125-preview
+    provider: openai
+
+activities:
+  read_prompt:
+    type: read
+
+  generate_ideas:
+    type: generate
+    inputs:
+      - activity: read_prompt
+    models:
+      - gpt4
+    parameters:
+      temperature: 0.7
+      max_tokens: 2000
+      format: json
+      prompt: >
+        Generate new product ideas with the following requirements: 
+        
+        {{read_prompt}}
+
+        The ideas are just ideas. The product need not yet exist, nor may it necessarily be
+        clearly feasible.
+        
+        Follow these steps. Do each step, even if you think you do not need to.
+        
+        First generate a list of 100 ideas (short title only).
+        
+        Second, go through the list and determine whether the ideas are different and bold,
+        modify the ideas as needed to make them bolder and more different. No two ideas
+        should be the same. This is important!
+
+        Do this step by step! 
+
+        Produce the result as a list of JSON objects. Sample output: 
+        
+        [{"title": "Coffee mug that heats beverages"}, {"title": "Study lamp with Pomodoro timer"}] 
+
+
+  add_names_and_descriptions:
+    type: generate
+    inputs:
+      - activity: read_prompt
+      - activity: generate_ideas
+        map: $
+        batch_size: 10
+    models:
+      - gpt4
+    parameters:
+      temperature: 0.7
+      format: json
+      max_tokens: 2000
+      prompt: >
+        We are generating ideas for a new product described as:
+        {{read_prompt}}
+
+        Here is a list of 100 ideas that were generated for this product:
+        {{generate_ideas}}
+
+        Your assignment:
+        Give each idea a name and a description.
+        The description should be expressed as a paragraph of 40-80 words.
+        
+        Sample input: 
+        
+        [{"title": "Coffee mug that heats beverages"}, {"title": "Study lamp with Pomodoro timer"}] 
+        
+        Sample output: 
+        
+        [{
+          "name": "QuickHeat Mug",
+          "description": "An insulated, battery-powered coffee mug that can heat beverages within minutes and maintain the temperature. Ideal for students who need a warm drink during long study sessions but don't have immediate access to a kitchen."
+        }, {
+          "name": "StudyBuddy Lamp"
+          "description": "A compact, portable LED desk lamp with built-in timers for the Pomodoro study technique, adjustable brightness levels, and a USB charging port for smartphones. It's designed to help students focus and manage their study time effectively."
+        }]
+        
+  save_ideas:
+    type: write
+    inputs:
+      - activity: add_names_and_descriptions
+    parameters:
+      filename: chain_of_thought.json
+      format: json        
+        

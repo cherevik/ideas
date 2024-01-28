@@ -1,0 +1,3 @@
+[submodule "pyaq"]
+	path = pyaq
+	url = https://github.com/anyquest/pyaq.git
